@@ -1,13 +1,18 @@
 <?php
-require './store/config.php';
-require './store/functions.php';
-$data_from_db = get_all_products();
+require 'store/config.php';
+/* отобразить все товары-------------------------------------------- */
+$query = "SELECT * FROM products";
+$req = mysqli_query($conn, $query);
+$data_from_db = [];
+while ($result = mysqli_fetch_assoc($req)) {
+   $data_from_db[] = $result;
+}
 ?>
-
+<?php require 'header.php'; ?>
 <section class="home">
    <div class="swiper home-slider">
       <div class="swiper-wrapper">
-         <div class="swiper-slide slide" style="background:url(./images/slide1.jpg) no-repeat">
+         <div class="swiper-slide slide" style="background:url(images/slide1.jpg) no-repeat">
             <div class="content">
                <span>пришёл, увидел, захотел домой</span>
                <h3>путешествия по самым некрасивым местам россии</h3>
@@ -15,7 +20,7 @@ $data_from_db = get_all_products();
             </div>
          </div>
 
-         <div class="swiper-slide slide" style="background:url('./images/slide2.jpg') no-repeat">
+         <div class="swiper-slide slide" style="background:url('images/slide2.jpg') no-repeat">
             <div class="content">
                <span>пришёл, увидел, захотел домой</span>
                <h3>познай русскую хтонь</h3>
@@ -23,7 +28,7 @@ $data_from_db = get_all_products();
             </div>
          </div>
 
-         <div class="swiper-slide slide" style="background:url(./images/slide3.jpg) no-repeat">
+         <div class="swiper-slide slide" style="background:url(images/slide3.jpg) no-repeat">
             <div class="content">
                <span>пришёл, увидел, захотел домой</span>
                <h3>увиденное не развидеть</h3>
@@ -47,27 +52,27 @@ $data_from_db = get_all_products();
    <h1 class="heading-title">Наши услуги</h1>
    <div class="box-container">
       <div class="box">
-         <img src="./images/icon-1.png" alt="">
+         <img src="images/icon-1.png" alt="">
          <h3>сомнительные красоты</h3>
       </div>
       <div class="box">
-         <img src="./images/icon-2.png" alt="">
+         <img src="images/icon-2.png" alt="">
          <h3>очень приблизительная карта местности</h3>
       </div>
       <div class="box">
-         <img src="./images/icon-3.png" alt="">
+         <img src="images/icon-3.png" alt="">
          <h3>выдадим дозиметр</h3>
       </div>
       <div class="box">
-         <img src="./images/icon-4.png" alt="">
+         <img src="images/icon-4.png" alt="">
          <h3>страшилки у костра</h3>
       </div>
       <div class="box">
-         <img src="./images/icon-5.png" alt="">
+         <img src="images/icon-5.png" alt="">
          <h3>никто не узнает где вы</h3>
       </div>
       <div class="box">
-         <img src="./images/icon-6.png" alt="">
+         <img src="images/icon-6.png" alt="">
          <h3>дарим плащ-палатку </h3>
       </div>
    </div>
@@ -75,7 +80,7 @@ $data_from_db = get_all_products();
 
 <section class="home-about">
    <div class="image">
-      <img src="./images/whyus.jpg" alt="">
+      <img src="images/whyus.jpg" alt="">
    </div>
    <div class="content">
       <h3>Почему мы? </h3>
@@ -108,20 +113,14 @@ $data_from_db = get_all_products();
 
 
 <section class="home-packages">
-
-   <h1 class="heading-title">направления</h1>
-
+   <h3 class="heading-title">направления</h3>
    <div class="box-container">
       <?php
-
-
       foreach ($data_from_db as $fetch_product) :
       ?>
-
          <div class="box">
             <div class="image">
-               <img src="./uploaded_img/<?php echo $fetch_product['image']; ?>" alt="">
-
+               <img src="uploaded_img/<?php echo $fetch_product['image']; ?>" alt="">
             </div>
             <div class="content">
                <h3><?php echo $fetch_product['name']; ?></h3>
@@ -157,3 +156,4 @@ $data_from_db = get_all_products();
    </div>
 </section>
 
+<?php require 'footer.php'; ?>

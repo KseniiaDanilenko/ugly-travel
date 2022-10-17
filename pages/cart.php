@@ -1,86 +1,87 @@
 <?php
 session_start();
 require './store/config.php';
-require_once './store/functions.php';
-
+/* удалить товар из корзины-------------------------------------------- */
 if (isset($_GET['delete_id']) && isset($_SESSION['cart_list'])) {
-	delete_product_from_cart($_GET['delete_id']);
+  foreach ($_SESSION['cart_list'] as $key => $value) {
+    if ($value['id'] == $_GET['delete_id']) {
+      unset($_SESSION['cart_list'][$key]);
+    }
+  }
 }
-if (isset($_GET['delete_all']) && isset($_SESSION['cart_list'])) {
-	delete_all_products_from_cart();
+/* 	очистить корзину------------------------------------------------------- */
+if (isset($_GET['delete_all']) || isset($_GET['clearcart']) && isset($_SESSION['cart_list'])) {
+  foreach ($_SESSION['cart_list'] as $key => $value) {
+    unset($_SESSION['cart_list'][$key]);
+  }
 }
-
+/* добавить товар в корзину-------------------------------------------- */
 if (isset($_GET['product_id']) && !empty($_GET['product_id'])) {
-	add_product_to_cart($_GET['product_id']);
+  $query = "SELECT * FROM products WHERE id=" . $_GET['product_id'];
+  $req = mysqli_query($conn, $query);
+  $current_added_product = mysqli_fetch_assoc($req);
+
+  if (!empty($current_added_product)) {
+
+    if (!isset($_SESSION['cart_list'])) {
+      $_SESSION['cart_list'][] = $current_added_product;
+    }
+    $product_check = false;
+    if (isset($_SESSION['cart_list'])) {
+      foreach ($_SESSION['cart_list'] as $value) {
+        if ($value['id'] == $current_added_product['id']) {
+          $product_check = true;
+        }
+      }
+    }
+
+    if (!$product_check) {
+      $_SESSION['cart_list'][] = $current_added_product;
+    }
+  } else {
+    header("Location: 404");
+  }
 }
 
-if(isset($_GET['clearcart'])){
-delete_all_products_from_cart();
-
-}
 $grand_total = 0;
 ?>
+<?php require 'header.php'; ?>
 
-<!-- <!DOCTYPE html>
-<html lang="en">
+<div class="heading" style="background:url(./images/header-bg-3.jpg) no-repeat">
+  <h1>Корзина</h1>
 
-<head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Корзина</title>
- 
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-   <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+</div>
+<section class="shopping-cart">
 
-	 <link rel="stylesheet" href="./css/style.css">
-<body> -->
+  <table>
+    <thead>
+      <th>Название</th>
+      <th>Стоимость</th>
+      <th></th>
+    </thead>
+    <tbody>
+      <?php foreach ($_SESSION['cart_list'] as $fetch_cart) :
+      ?>
+        <tr>
+          <td class="name"> <?php echo $fetch_cart['name']; ?></td>
+          <td><?php echo $sub_total = $fetch_cart['price'] * $fetch_cart['quantity']; ?> ₽</td>
+          <td> <a class="btn" href="cart?delete_id=<?php echo $fetch_cart['id']; ?>">Удалить из корзины</a></td>
+        </tr>
+      <?php
+        $grand_total = $grand_total + $sub_total;
 
+      endforeach; ?>
+      <tr class="table-bottom">
+        <td colspan="2" class="sum"> Итого</td>
+        <td><?php echo $grand_total; ?> ₽</td>
+      </tr>
+    </tbody>
+  </table>
 
-	<div class="heading" style="background:url(./images/header-bg-3.jpg) no-repeat">
-		<h1>Корзина</h1>
-
-	</div>
-	<section class="shopping-cart">
-
-		<table>
-			<thead>
-				<th>Название</th>
-				<th>Стоимость</th>
-				<th>Итого</th>
-				<th></th>
-			</thead>
-			<tbody>
-				<?php foreach ($_SESSION['cart_list'] as $fetch_cart) : 
-					?>
-					<tr>
-						<td><?php echo $fetch_cart['name']; ?></td>
-						<td><?php echo $fetch_cart['price']; ?> ₽</td>						
-						<td><?php echo $sub_total = $fetch_cart['price'] * $fetch_cart['quantity']; ?> ₽</td>
-						<td> <a class="delete-btn" href="cart?delete_id=<?php echo $fetch_cart['id']; ?>">Удалить из корзины</a></td>
-					</tr>
-				<?php
-					$grand_total = $grand_total + $sub_total;
-
-				endforeach; ?>
-				<tr class="table-bottom">
-					<td colspan="2" class="sum"> Итого</td>
-					<td><?php echo $grand_total; ?> ₽</td>
-				</tr>
-			</tbody>
-		</table>
-
-		<div class="checkout-btn">
-      <a href="cart?delete_all" class="btn <?= ($grand_total > 1) ? '' : 'disabled'; ?>"> <i class="fas fa-trash"></i> Очистить корзину </a>
-			<a href="products" class="option-btn" style="margin-top: 0;">Вернуться в каталог</a>
-         <a href="checkout" class="btn <?= ($grand_total > 1) ? '' : 'disabled'; ?>">Перейти к оформлению</a>
-      </div>
-	</section>
-
-
-<!-- 	<script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
-
-<script src="./js/script.js"></script>
-</body>
-
-</html> -->
+  <div class="checkout-btn">
+    <a href="cart?delete_all" class="btn <?php ($grand_total > 1) ? '' : 'disabled'; ?>"> <i class="fas fa-trash"></i> Очистить корзину </a>
+    <a href="products" class="btn"">Вернуться в каталог</a>
+         <a href=" checkout" class="btn <?php ($grand_total > 1) ? '' : 'disabled'; ?>">Перейти к оформлению</a>
+  </div>
+</section>
+<?php require 'footer.php'; ?>

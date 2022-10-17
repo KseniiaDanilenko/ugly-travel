@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 
 <head>
    <meta charset="UTF-8">
@@ -10,12 +10,14 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <link rel="stylesheet" href="./css/style.css">
+<title>Хочу домой</title>
+<link rel="shortcut icon" type="image/png" href="../images/favicon.png" >
 </head>
+<!DOCTYPE html>
 
 <body>
-   <?php var_dump($_GET) ?>
    <section class="header">
-      <a href="home" class="logo">Путешествуй, но не очень долго.</a>
+      <a href="main" class="logo">Путешествуй, но не очень долго.</a>
       <nav class="navbar">
          <a href="main">Главная</a>
          <a href="about">О нас</a>

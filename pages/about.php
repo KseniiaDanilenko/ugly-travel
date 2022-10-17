@@ -1,8 +1,8 @@
+
+<?php require 'header.php'; ?>
 <div class="heading" style="background:url(./images/header-bg-1.png) no-repeat">
    <h1>О нас</h1>
 </div>
-
-
 <section class="about">
    <div class="image">
       <img src="./images/about.jpg" alt="">
@@ -92,6 +92,7 @@
 
 </section>
 
+<?php require 'footer.php'; ?>
 
 
 
